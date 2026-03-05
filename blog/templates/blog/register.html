@@ -1,0 +1,32 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow p-4">
+        <h2 class="text-center mb-4">Créer un compte</h2>
+
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Nom d'utilisateur</label>
+                {{ form.username }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mot de passe</label>
+                {{ form.password1 }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Confirmer le mot de passe</label>
+                {{ form.password2 }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                S'inscrire
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

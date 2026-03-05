@@ -1,0 +1,45 @@
+{% extends 'blog/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Catégorie : {{ category.name }}</h1>
+    <a href="{% url 'add_post' %}" class="btn btn-success">
+        + Ajouter un article
+    </a>
+</div>
+
+<ul class="list-group">
+    {% for post in posts %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <a href="{% url 'post_detail' post.id %}" class="fw-bold">
+                {{ post.title }}
+            </a>
+            <br>
+            <small class="text-muted">
+                {{ post.created_at|naturaltime }} |
+                par {{ post.author.username }}
+            </small>
+        </div>
+
+        {% if user == post.author or user.is_superuser %}
+        <div>
+            <a href="{% url 'edit_post' post.id %}" class="btn btn-warning btn-sm me-1">
+                Modifier
+            </a>
+            <a href="{% url 'delete_post' post.id %}" class="btn btn-danger btn-sm">
+                Supprimer
+            </a>
+        </div>
+        {% endif %}
+    </li>
+    {% empty %}
+    <li class="list-group-item text-center">
+        Aucun article dans cette catégorie.
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

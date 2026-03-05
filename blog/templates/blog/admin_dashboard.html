@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+{% load humanize %}
+{% block content %}
+<h1>Tableau de bord Yann_Aristoe</h1>
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Utilisateurs</h5>
+                <p class="card-text display-4">{{ total_users }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Articles</h5>
+                <p class="card-text display-4">{{ total_posts }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="{% url 'admin_categories' %}" class="btn btn-warning me-2">Gérer Catégories</a>
+<a href="{% url 'admin_users' %}" class="btn btn-danger">Gérer Utilisateurs</a>
+{% endblock %}

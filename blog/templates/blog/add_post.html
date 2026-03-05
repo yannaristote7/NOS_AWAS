@@ -1,0 +1,26 @@
+{% extends 'blog/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<h2>Ajouter un article</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Titre</label>
+        <input type="text" name="title" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Contenu</label>
+        <textarea name="content" class="form-control" rows="6" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Catégorie</label>
+        <select name="category" class="form-select" required>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Ajouter</button>
+</form>
+{% endblock %}

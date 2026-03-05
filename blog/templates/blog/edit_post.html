@@ -1,0 +1,35 @@
+{% extends 'blog/base.html' %}
+{% load humanize %}
+{% block content %}
+<h2>Modifier l'article</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Titre</label>
+        <input type="text" name="title" class="form-control" value="{{ post.title }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Contenu</label>
+        <textarea name="content" class="form-control" rows="5">{{ post.content }}</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Catégorie</label>
+        <select name="category" class="form-control">
+            {% for cat in categories %}
+                <option value="{{ cat.id }}"
+                    {% if cat == post.category %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+    <a href="{% url 'post_detail' post.id %}" class="btn btn-secondary">Annuler</a>
+</form>
+
+{% endblock %}

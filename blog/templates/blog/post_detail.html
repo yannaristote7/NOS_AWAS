@@ -1,0 +1,41 @@
+{% extends 'blog/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h2 class="card-title">{{ post.title }}</h2>
+
+            <p class="text-muted">
+                {{ post.created_at|naturaltime }} |
+                Par {{ post.author.username }} |
+                Catégorie : {{ post.category.name }}
+            </p>
+
+            <hr>
+
+            <p class="card-text" style="white-space: pre-line;">
+                {{ post.content }}
+            </p>
+
+            {% if user == post.author or user.is_superuser %}
+            <div class="mt-4">
+                <a href="{% url 'edit_post' post.id %}" class="btn btn-warning">
+                    Modifier
+                </a>
+                <a href="{% url 'delete_post' post.id %}" class="btn btn-danger">
+                    Supprimer
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'blog/base.html' %}
+{% load humanize %}
+{% block content %}
+<h1>Mes articles</h1>
+<ul class="list-group mt-3">
+    {% for post in posts %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <a href="{% url 'post_detail' post.id %}" class="fw-bold">{{ post.title }}</a>
+            <br>
+            <small class="text-muted">{{ post.created_at|naturaltime }} | Catégorie: {{ post.category.name }}</small>
+        </div>
+        <div>
+            <a href="{% url 'edit_post' post.id %}" class="btn btn-warning btn-sm me-1">Modifier</a>
+            <a href="{% url 'delete_post' post.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+        </div>
+    </li>
+    {% empty %}
+        <li class="list-group-item">Vous n'avez pas encore posté d'article</li>
+    {% endfor %}
+</ul>
+{% endblock %}

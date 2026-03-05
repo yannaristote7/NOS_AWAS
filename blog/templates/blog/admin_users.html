@@ -1,0 +1,15 @@
+{% extends 'blog/base.html' %}
+{% load humanize %}
+{% block content %}
+<h1>Gérer les utilisateurs</h1>
+<ul class="list-group mt-3">
+    {% for u in users %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ u.username }} {% if u.is_superuser %}(SuperAdmin){% endif %}
+        {% if not u.is_superuser %}
+        <a href="{% url 'delete_user' u.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

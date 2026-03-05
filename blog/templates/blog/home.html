@@ -1,0 +1,66 @@
+{% extends 'blog/base.html' %}
+{% load humanize %}
+{% load static %}
+{% block content %}
+
+{% if not user.is_authenticated %}
+
+<div class="hero-section d-flex justify-content-center align-items-center text-center">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content text-white">
+        <h1 class="display-2 fw-bold mb-4">NOS_AWAS</h1>
+        <p class="lead mb-5">Découvrez et partagez des articles dans vos catégories préférées</p>
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-3 px-4">
+            Se connecter
+        </a>
+        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">
+            S’inscrire
+        </a>
+    </div>
+</div>
+
+{% else %}
+
+<!-- LISTE DES ARTICLES POUR CONNECTÉ -->
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Articles récents</h1>
+        <a href="{% url 'add_post' %}" class="btn btn-success">Ajouter un article</a>
+    </div>
+
+    <!-- Filtre catégories -->
+    <div class="mb-3">
+        <h5>Catégories</h5>
+        <ul class="list-inline">
+            {% for cat in categories %}
+                <li class="list-inline-item">
+                    <a href="{% url 'category_posts' cat.id %}" class="btn btn-outline-secondary btn-sm">{{ cat.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <ul class="list-group">
+        {% for post in posts %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="{% url 'post_detail' post.id %}" class="fw-bold">{{ post.title }}</a>
+                    <br>
+                    <small class="text-muted">{{ post.created_at|naturaltime }} par {{ post.author.username }} | Catégorie: {{ post.category.name }}</small>
+                </div>
+                {% if user == post.author or user.is_superuser %}
+                    <div>
+                        <a href="{% url 'edit_post' post.id %}" class="btn btn-warning btn-sm me-1">Modifier</a>
+                        <a href="{% url 'delete_post' post.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                    </div>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li class="list-group-item">Aucun article pour le moment</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% endblock %}
