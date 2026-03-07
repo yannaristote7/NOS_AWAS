@@ -48,7 +48,17 @@ def add_post(request):
         content = request.POST['content']
         category_id = request.POST['category']
         category = get_object_or_404(Category, pk=category_id)
-        Post.objects.create(title=title, content=content, author=request.user, category=category)
+        
+        # ✅ récupérer l'image
+        image = request.FILES.get('image')  # None si pas d'image
+        
+        Post.objects.create(
+            title=title,
+            content=content,
+            author=request.user,
+            category=category,
+            image=image
+        )
         messages.success(request, 'Article ajouté avec succès !')
         return redirect('home')
     return render(request, 'blog/add_post.html', {'categories': categories})

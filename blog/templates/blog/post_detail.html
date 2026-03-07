@@ -18,6 +18,10 @@
 
             <hr>
 
+            {% if post.image %}
+            <img src="{{ post.image.url }}" class="img-fluid mb-3" alt="Image de l'article">
+            {% endif %}
+
             <p class="card-text" style="white-space: pre-line;">
                 {{ post.content }}
             </p>
