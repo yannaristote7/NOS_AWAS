@@ -75,6 +75,8 @@ def edit_post(request, post_id):
 
     categories = Category.objects.all()
 
+    
+
     if request.method == 'POST':
         post.title = request.POST.get('title')
         post.content = request.POST.get('content')
@@ -82,6 +84,10 @@ def edit_post(request, post_id):
         category_id = request.POST.get('category')
         if category_id:
             post.category = get_object_or_404(Category, pk=category_id)
+            
+        
+        if 'image' in request.FILES:
+            post.image = request.FILES['image']
 
         post.save()
 
@@ -92,6 +98,7 @@ def edit_post(request, post_id):
         'post': post,
         'categories': categories
     })
+    
 # ---------------- SUPPRIMER POST ----------------
 @login_required
 def delete_post(request, post_id):

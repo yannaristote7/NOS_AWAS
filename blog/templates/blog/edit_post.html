@@ -3,7 +3,7 @@
 {% block content %}
 <h2>Modifier l'article</h2>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="mb-3">
@@ -27,6 +27,16 @@
             {% endfor %}
         </select>
     </div>
+    <div class="mb-3">
+        <label>Image</label>
+        {% if post.image %}
+            <div class="mb-2">
+                <img src="{{ post.image.url }}" alt="Image actuelle" style="max-width: 200px;">
+            </div>
+        {% endif %}
+        <input type="file" name="image" class="form-control">
+    </div>
+
 
     <button type="submit" class="btn btn-success">Enregistrer</button>
     <a href="{% url 'post_detail' post.id %}" class="btn btn-secondary">Annuler</a>
