@@ -27,6 +27,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='blog/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('register/', blog_views.register, name='register'),
+    path('post/<int:post_id>/comment/', blog_views.add_comment, name='add_comment'),
 ]
 
 if settings.DEBUG:

@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib import messages
+from .models import Comment
 
 
 # ---------------- HOME ----------------
@@ -193,3 +194,22 @@ def logout_view(request):
     request.session.flush()  # vide complètement la session
     messages.success(request, "Vous êtes bien déconnecté.")
     return redirect('home')
+#----------------COMMENTAIRE------------------
+
+
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+
+        if content:
+            Comment.objects.create(
+                post=post,
+                author=request.user,
+                content=content
+            )
+            messages.success(request, "Commentaire ajouté !")
+
+    return redirect('post_detail', post_id=post.id)

@@ -3,42 +3,59 @@
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="container mt-5" style="max-width: 800px;">
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+    <!-- IMAGE -->
+    {% if post.image %}
+        <img src="{{ post.image.url }}" class="img-fluid rounded mb-4 shadow">
+    {% endif %}
 
-            <h2 class="card-title">{{ post.title }}</h2>
+    <!-- TITRE -->
+    <h1 class="fw-bold mb-3">{{ post.title }}</h1>
 
-            <p class="text-muted">
-                {{ post.created_at|naturaltime }} |
-                Par {{ post.author.username }} |
-                Catégorie : {{ post.category.name }}
-            </p>
+    <!-- META -->
+    <p class="text-muted mb-4">
+        {{ post.created_at|naturaltime }} · {{ post.author.username }} · {{ post.category.name }}
+    </p>
 
-            <hr>
-
-            {% if post.image %}
-            <img src="{{ post.image.url }}" class="img-fluid mb-3" alt="Image de l'article">
-            {% endif %}
-
-            <p class="card-text" style="white-space: pre-line;">
-                {{ post.content }}
-            </p>
-
-            {% if user == post.author or user.is_superuser %}
-            <div class="mt-4">
-                <a href="{% url 'edit_post' post.id %}" class="btn btn-warning">
-                    Modifier
-                </a>
-                <a href="{% url 'delete_post' post.id %}" class="btn btn-danger">
-                    Supprimer
-                </a>
-            </div>
-            {% endif %}
-
-        </div>
+    <!-- CONTENU -->
+    <div class="post-content mb-5">
+        {{ post.content|linebreaks }}
     </div>
+
+    <!-- ACTIONS -->
+    {% if user == post.author or user.is_superuser %}
+    <div class="mb-4">
+        <a href="{% url 'edit_post' post.id %}" class="btn btn-outline-warning me-2">Modifier</a>
+        <a href="{% url 'delete_post' post.id %}" class="btn btn-outline-danger">Supprimer</a>
+    </div>
+    {% endif %}
+
+    <hr>
+
+    <!-- COMMENTAIRES -->
+    <h4 class="mb-4">Commentaires</h4>
+
+    {% for comment in post.comments.all %}
+        <div class="mb-3 p-3 border rounded comment-box">
+            <strong>{{ comment.author.username }}</strong>
+            <small class="text-muted"> · {{ comment.created_at|naturaltime }}</small>
+            <p class="mb-0 mt-2">{{ comment.content }}</p>
+        </div>
+    {% empty %}
+        <p>Aucun commentaire pour le moment.</p>
+    {% endfor %}
+
+    <!-- FORMULAIRE COMMENTAIRE -->
+    {% if user.is_authenticated %}
+    <form method="POST" action="{% url 'add_comment' post.id %}" class="mt-4">
+        {% csrf_token %}
+        <textarea name="content" class="form-control mb-2" rows="3" placeholder="Ajouter un commentaire..."></textarea>
+        <button class="btn btn-dark">Publier</button>
+    </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Connecte-toi</a> pour commenter</p>
+    {% endif %}
 
 </div>
 
