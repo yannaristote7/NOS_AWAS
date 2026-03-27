@@ -9,16 +9,32 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib import messages
 from .models import Comment
+from .models import Like
+from django.db.models import Count
 
 
 # ---------------- HOME ----------------
+
+
 def home(request):
     categories = Category.objects.all()
+
+    popular_posts = Post.objects.annotate(
+        num_likes=Count('likes')
+    ).order_by('-num_likes')[:5]
+
     if request.user.is_authenticated:
         posts = Post.objects.all().order_by('-created_at')
-        return render(request, 'blog/home.html', {'posts': posts, 'categories': categories})
+        return render(request, 'blog/home.html', {
+            'posts': posts,
+            'categories': categories,
+            'popular_posts': popular_posts
+        })
     else:
-        return render(request, 'blog/home.html', {'categories': categories})
+        return render(request, 'blog/home.html', {
+            'categories': categories,
+            'popular_posts': popular_posts
+        })
 
 # ---------------- DÉTAIL POST ----------------
 def post_detail(request, post_id):
@@ -213,3 +229,21 @@ def add_comment(request, post_id):
             messages.success(request, "Commentaire ajouté !")
 
     return redirect('post_detail', post_id=post.id)
+#------------------LIKE------------------
+
+
+@login_required
+def toggle_like(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    like, created = Like.objects.get_or_create(post=post, user=request.user)
+
+    if not created:
+        like.delete()
+
+    return redirect('post_detail', post_id=post.id)
+#------------------PROFIL------------------
+@login_required
+def profile(request):
+    posts = Post.objects.filter(author=request.user)
+    return render(request, 'blog/profile.html', {'posts': posts})

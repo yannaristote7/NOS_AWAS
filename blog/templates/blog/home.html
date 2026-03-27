@@ -22,6 +22,21 @@
 
 {% else %}
 
+<h3>🔥 Articles populaires</h3>
+
+<div class="row mb-4">
+    {% for post in popular_posts %}
+    <div class="col-md-3">
+        <div class="card p-2 shadow-sm">
+            <a href="{% url 'post_detail' post.id %}">
+                {{ post.title }}
+            </a>
+            <small>❤️ {{ post.likes.count }}</small>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 <!-- LISTE DES ARTICLES POUR CONNECTÉ -->
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">

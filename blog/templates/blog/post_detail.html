@@ -58,5 +58,11 @@
     {% endif %}
 
 </div>
+<form method="POST" action="{% url 'toggle_like' post.id %}">
+    {% csrf_token %}
+    <button class="btn btn-outline-danger">
+        ❤️ {{ post.likes.count }}
+    </button>
+</form>
 
 {% endblock %}
