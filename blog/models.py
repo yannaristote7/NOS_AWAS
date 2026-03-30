@@ -32,4 +32,10 @@ class Like(models.Model):
 
     class Meta:
         unique_together = ('post', 'user')    
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png')
+
+    def __str__(self):
+        return self.user.username
     

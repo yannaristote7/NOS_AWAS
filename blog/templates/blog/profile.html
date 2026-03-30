@@ -1,16 +1,77 @@
 {% extends 'blog/base.html' %}
-
+{% load humanize %}
+{% load static %}
 {% block content %}
-<h2>Mon profil</h2>
 
-<p>Nom : {{ user.username }}</p>
+<div class="container mt-5">
 
-<h4>Mes articles</h4>
+    <!-- HEADER PROFIL -->
+    <div class="card shadow-lg p-4 mb-4 text-center profile-header">
 
-<ul>
-    {% for post in posts %}
-        <li>{{ post.title }}</li>
-    {% endfor %}
-</ul>
+        <div class="mb-3">
+            <img src="{{ profile.avatar.url }}" 
+                 class="rounded-circle shadow"
+                 width="120" height="120"
+                 style="object-fit: cover;">
+        </div>
+
+        <h2 class="fw-bold">{{ request.user.username }}</h2>
+        <p class="text-muted">Membre actif</p>
+
+        <!-- STATS -->
+        <div class="d-flex justify-content-center gap-4 mt-3">
+            <div>
+                <h5>{{ request.user.post_set.count }}</h5>
+                <small>Articles</small>
+            </div>
+            <div>
+                <h5>{{ total_likes }}</h5>
+                <small>Likes</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FORM AVATAR -->
+    <div class="card p-3 shadow-sm mb-4">
+        <h5>Modifier votre photo</h5>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.avatar }}
+            <button class="btn btn-primary mt-2">Mettre à jour</button>
+        </form>
+    </div>
+
+    <!-- ARTICLES -->
+    <h3 class="mb-3">📝 Mes articles</h3>
+
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-md-4 mb-4">
+            <div class="card post-card shadow">
+
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top post-image">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5>{{ post.title }}</h5>
+                    <p class="text-muted small">{{ post.created_at|naturaltime }}</p>
+                    <p>{{ post.content|truncatewords:12 }}</p>
+                </div>
+
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{% url 'post_detail' post.id %}" class="btn btn-primary btn-sm">Voir</a>
+                    <small>❤️ {{ post.likes.count }}</small>
+                </div>
+
+            </div>
+        </div>
+        {% empty %}
+            <p>Aucun article pour le moment.</p>
+        {% endfor %}
+    </div>
+
+</div>
 
 {% endblock %}

@@ -10,6 +10,7 @@
 
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         body.dark-mode {
@@ -48,22 +49,24 @@
 
         /* Animation cards */
         .post-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 15px;
-            overflow: hidden;
-        }
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    background-color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .post-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+}
 
-        /* Image */
-        .post-image {
-            height: 200px;
-            object-fit: cover;
-        }
-
+.post-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
         /* Fade */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -210,6 +213,24 @@ function toggleDarkMode() {
 if (localStorage.getItem("darkMode") === "on") {
     document.body.classList.add("dark-mode");
 }
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.post-card');
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {threshold: 0.2});
+
+    cards.forEach(card => observer.observe(card));
+});
+
 </script>
 
 </body>

@@ -11,6 +11,8 @@ from django.contrib import messages
 from .models import Comment
 from .models import Like
 from django.db.models import Count
+from .forms import UserProfileForm
+from .models import UserProfile
 
 
 # ---------------- HOME ----------------
@@ -243,7 +245,32 @@ def toggle_like(request, post_id):
 
     return redirect('post_detail', post_id=post.id)
 #------------------PROFIL------------------
+# blog/views.py
 @login_required
 def profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+@login_required
+def profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
     posts = Post.objects.filter(author=request.user)
-    return render(request, 'blog/profile.html', {'posts': posts})
+
+    # 🔥 total likes
+    total_likes = sum(post.likes.count() for post in posts)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Avatar mis à jour !")
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=profile)
+
+    return render(request, 'blog/profile.html', {
+        'form': form,
+        'profile': profile,
+        'posts': posts,
+        'total_likes': total_likes
+    })

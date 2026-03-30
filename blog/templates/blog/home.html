@@ -4,40 +4,30 @@
 {% block content %}
 
 {% if not user.is_authenticated %}
-
 <div class="hero-section d-flex justify-content-center align-items-center text-center">
     <div class="hero-overlay"></div>
-
     <div class="hero-content text-white">
         <h1 class="display-2 fw-bold mb-4">NOS_AWAS</h1>
         <p class="lead mb-5">Découvrez et partagez des articles dans vos catégories préférées</p>
-        <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-3 px-4">
-            Se connecter
-        </a>
-        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">
-            S’inscrire
-        </a>
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-3 px-4">Se connecter</a>
+        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">S’inscrire</a>
     </div>
 </div>
 
 {% else %}
 
 <h3>🔥 Articles populaires</h3>
-
 <div class="row mb-4">
     {% for post in popular_posts %}
     <div class="col-md-3">
-        <div class="card p-2 shadow-sm">
-            <a href="{% url 'post_detail' post.id %}">
-                {{ post.title }}
-            </a>
+        <div class="card p-2 shadow-sm post-card">
+            <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
             <small>❤️ {{ post.likes.count }}</small>
         </div>
     </div>
     {% endfor %}
 </div>
 
-<!-- LISTE DES ARTICLES POUR CONNECTÉ -->
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Articles récents</h1>
@@ -56,47 +46,49 @@
         </ul>
     </div>
 
-  <div class="row">
+    <div class="row">
     {% for post in posts %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow post-card">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow post-card">
 
-            {% if post.image %}
-            <img src="{{ post.image.url }}" class="card-img-top post-image">
-            {% endif %}
-
-            <div class="card-body">
-                <h5 class="card-title">
-                    <a href="{% url 'post_detail' post.id %}" class="text-decoration-none">
-                        {{ post.title }}
-                    </a>
-                </h5>
-
-                <p class="text-muted small">
-                    {{ post.created_at|naturaltime }} | {{ post.category.name }}
-                </p>
-
-                <p class="card-text">
-                    {{ post.content|truncatewords:15 }}
-                </p>
-            </div>
-
-            <div class="card-footer bg-white border-0">
-                <a href="{% url 'post_detail' post.id %}" class="btn btn-primary btn-sm">
-                    Lire plus
-                </a>
-
-                {% if user == post.author or user.is_superuser %}
-                    <a href="{% url 'edit_post' post.id %}" class="btn btn-warning btn-sm">✏️</a>
-                    <a href="{% url 'delete_post' post.id %}" class="btn btn-danger btn-sm">🗑️</a>
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top post-image">
                 {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'post_detail' post.id %}" class="text-decoration-none">{{ post.title }}</a>
+                    </h5>
+
+                    <p class="text-muted small">
+                        {{ post.created_at|naturaltime }} | {{ post.category.name }}
+                        <br>
+                        {% if post.author.userprofile %}
+                            <img src="{{ post.author.userprofile.avatar.url }}" class="rounded-circle me-2" width="30" height="30">
+                        {% endif %}
+                        {{ post.author.username }}
+                    </p>
+
+                    <p class="card-text">{{ post.content|truncatewords:15 }}</p>
+                </div>
+
+                <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                    <a href="{% url 'post_detail' post.id %}" class="btn btn-primary btn-sm">Lire plus</a>
+                    <small>❤️ {{ post.likes.count }}</small>
+
+                    {% if user == post.author or user.is_superuser %}
+                        <div>
+                            <a href="{% url 'edit_post' post.id %}" class="btn btn-warning btn-sm">✏️</a>
+                            <a href="{% url 'delete_post' post.id %}" class="btn btn-danger btn-sm">🗑️</a>
+                        </div>
+                    {% endif %}
+                </div>
+
             </div>
-
         </div>
-    </div>
     {% endfor %}
+    </div>
 </div>
-</div>
-{% endif %}
 
+{% endif %}
 {% endblock %}
