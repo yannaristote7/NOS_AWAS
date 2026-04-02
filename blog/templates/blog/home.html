@@ -51,9 +51,32 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow post-card">
 
-                {% if post.image %}
-                    <img src="{{ post.image.url }}" class="card-img-top post-image">
-                {% endif %}
+ {% if post.images.all %}
+<div id="carousel{{ post.id }}" class="carousel slide">
+    <div class="carousel-inner">
+
+        {% for img in post.images.all %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img src="{{ img.image.url }}" class="d-block w-100 post-image">
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% if post.images.count > 1 %}
+    <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ post.id }}" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ post.id }}" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+    {% endif %}
+</div>
+
+{% elif post.image %}
+    <img src="{{ post.image.url }}" class="card-img-top post-image">
+{% endif %}
 
                 <div class="card-body">
                     <h5 class="card-title">

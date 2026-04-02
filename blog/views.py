@@ -13,6 +13,7 @@ from .models import Like
 from django.db.models import Count
 from .forms import UserProfileForm
 from .models import UserProfile
+from .models import PostImage   
 
 
 # ---------------- HOME ----------------
@@ -69,15 +70,18 @@ def add_post(request):
         category = get_object_or_404(Category, pk=category_id)
         
         # ✅ récupérer l'image
-        image = request.FILES.get('image')  # None si pas d'image
+        images = request.FILES.getlist('images')  # None si pas d'image
         
         Post.objects.create(
             title=title,
             content=content,
             author=request.user,
             category=category,
-            image=image
+            image=images[0] if images else None
         )
+        # Enregistrer les images supplémentaires
+        for img in images[1:]:
+            PostImage.objects.create(post=post, image=img)
         messages.success(request, 'Article ajouté avec succès !')
         return redirect('home')
     return render(request, 'blog/add_post.html', {'categories': categories})
@@ -94,8 +98,6 @@ def edit_post(request, post_id):
 
     categories = Category.objects.all()
 
-    
-
     if request.method == 'POST':
         post.title = request.POST.get('title')
         post.content = request.POST.get('content')
@@ -103,10 +105,12 @@ def edit_post(request, post_id):
         category_id = request.POST.get('category')
         if category_id:
             post.category = get_object_or_404(Category, pk=category_id)
-            
-        
-        if 'image' in request.FILES:
-            post.image = request.FILES['image']
+
+        # 🔥 NOUVEAU : upload multiple images
+        images = request.FILES.getlist('images')
+
+        for img in images:
+            PostImage.objects.create(post=post, image=img)
 
         post.save()
 
