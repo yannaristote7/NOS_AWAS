@@ -63,29 +63,33 @@ def my_posts(request):
 @login_required
 def add_post(request):
     categories = Category.objects.all()
+
     if request.method == 'POST':
         title = request.POST['title']
         content = request.POST['content']
         category_id = request.POST['category']
         category = get_object_or_404(Category, pk=category_id)
-        
-        # ✅ récupérer l'image
-        images = request.FILES.getlist('images')  # None si pas d'image
-        
-        Post.objects.create(
+
+        # 🔥 récupérer les images d'abord
+        images = request.FILES.getlist('images')
+
+        # 🔥 créer le post
+        post = Post.objects.create(
             title=title,
             content=content,
             author=request.user,
             category=category,
-            image=images[0] if images else None
+            image=images[0] if images else None  # image principale
         )
-        # Enregistrer les images supplémentaires
+
+        # 🔥 enregistrer les autres images
         for img in images[1:]:
             PostImage.objects.create(post=post, image=img)
+
         messages.success(request, 'Article ajouté avec succès !')
         return redirect('home')
-    return render(request, 'blog/add_post.html', {'categories': categories})
 
+    return render(request, 'blog/add_post.html', {'categories': categories})
 # ---------------- ÉDITER POST ----------------
 @login_required
 def edit_post(request, post_id):

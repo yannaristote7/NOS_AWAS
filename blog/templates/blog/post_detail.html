@@ -6,9 +6,22 @@
 <div class="container mt-5" style="max-width: 800px;">
 
     <!-- IMAGE -->
-    {% if post.image %}
-        <img src="{{ post.image.url }}" class="img-fluid rounded mb-4 shadow">
-    {% endif %}
+   {% if post.images.all %}
+<div class="row mb-4">
+
+    {% for img in post.images.all %}
+    <div class="col-md-6 mb-3">
+        <img src="{{ img.image.url }}" class="img-fluid rounded shadow">
+    </div>
+    {% endfor %}
+
+</div>
+
+{% elif post.image %}
+<div class="mb-4">
+    <img src="{{ post.image.url }}" class="img-fluid rounded shadow">
+</div>
+{% endif %}
 
     <!-- TITRE -->
     <h1 class="fw-bold mb-3">{{ post.title }}</h1>
